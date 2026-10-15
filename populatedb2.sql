@@ -1,4 +1,4 @@
-USE grados;
+USE GradesDB;
 
 DELIMITER //
 CREATE OR REPLACE PROCEDURE p_populate_grados_extra()

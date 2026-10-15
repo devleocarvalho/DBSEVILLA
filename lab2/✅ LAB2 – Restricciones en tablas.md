@@ -28,7 +28,7 @@ Para identificar con claridad qué regla se viola cuando MariaDB lanza un error,
 
 ## 💻 3. Código SQL de Restricciones (`createdb.sql`)
 
-Todas estas restricciones se añadieron a la base de datos `grados` mediante instrucciones `ALTER TABLE`:
+Todas estas restricciones se añadieron a la base de datos `GradesDB` mediante instrucciones `ALTER TABLE`:
 
 ```sql
 -- 1. Tabla: people (RN12: Edad entre 16 y 70; RN14: Formato DNI con 8 dígitos y 1 letra)
@@ -165,4 +165,4 @@ VALUES ('12345678', 'Pedro', 'SinLetra', 25, 'pedro@us.es');
 
 ## 📌 7. Conclusión del Lab 2
 
-El esquema relacional `grados` ahora cuenta con una capa de seguridad declarativa completa. Ninguna fila con valores fuera de los límites legales o con duplicados no autorizados puede ser insertada o modificada.
+El esquema relacional `GradesDB` ahora cuenta con una capa de seguridad declarativa completa. Ninguna fila con valores fuera de los límites legales o con duplicados no autorizados puede ser insertada o modificada.

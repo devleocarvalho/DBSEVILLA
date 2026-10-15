@@ -20,7 +20,7 @@ Este documento resume los fundamentos, la arquitectura de tablas, las normas de 
 2. **Nombres de tablas:** En minúsculas, `snake_case` y en **plural** (ej. `people`, `degrees`, `teaching_loads`).
 3. **Nombres de columnas y atributos:** En minúsculas y `snake_case` (ej. `person_id`, `first_name`, `duration_years`).
 4. **Idioma del código:** El código SQL (tablas, campos y restricciones) se escribe en **inglés**, mientras que la documentación y comentarios están en **español**.
-5. **Base de datos de trabajo:** `grados`.
+5. **Base de datos de trabajo:** `GradesDB`.
 
 ---
 
@@ -45,9 +45,9 @@ Este documento resume los fundamentos, la arquitectura de tablas, las normas de 
 
 ```sql
 -- 1. Creación e inicialización de la base de datos
-DROP DATABASE IF EXISTS grados;
-CREATE DATABASE grados CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE grados;
+DROP DATABASE IF EXISTS GradesDB;
+CREATE DATABASE GradesDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE GradesDB;
 
 -- 2. Eliminación previa ordenada (desactivando FK checks temporalmente)
 SET FOREIGN_KEY_CHECKS = 0;
