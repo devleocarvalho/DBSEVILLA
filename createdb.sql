@@ -17,7 +17,6 @@ DROP TABLE IF EXISTS people;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- TABLE people
 CREATE TABLE people (
     person_id INT AUTO_INCREMENT,
     dni CHAR(9) NOT NULL,
@@ -28,7 +27,6 @@ CREATE TABLE people (
     PRIMARY KEY (person_id)
 );
 
--- TABLE professors
 CREATE TABLE professors (
     professor_id INT,
     category VARCHAR(30) NOT NULL,
@@ -36,7 +34,6 @@ CREATE TABLE professors (
     FOREIGN KEY (professor_id) REFERENCES people(person_id)
 );
 
--- TABLE students
 CREATE TABLE students (
     student_id INT,
     access_method VARCHAR(20) NOT NULL,
@@ -44,7 +41,6 @@ CREATE TABLE students (
     FOREIGN KEY (student_id) REFERENCES people(person_id)
 );
 
--- TABLE degrees
 CREATE TABLE degrees (
     degree_id INT AUTO_INCREMENT,
     degree_name VARCHAR(80) NOT NULL,
@@ -52,7 +48,6 @@ CREATE TABLE degrees (
     PRIMARY KEY (degree_id)
 );
 
--- TABLE subjects
 CREATE TABLE subjects (
     subject_id INT AUTO_INCREMENT,
     degree_id INT NOT NULL,
@@ -65,7 +60,6 @@ CREATE TABLE subjects (
     FOREIGN KEY (degree_id) REFERENCES degrees(degree_id)
 );
 
--- TABLE groups
 CREATE TABLE groups (
     group_id INT AUTO_INCREMENT,
     subject_id INT NOT NULL,
@@ -76,7 +70,6 @@ CREATE TABLE groups (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE
 );
 
--- TABLE group_enrollments
 CREATE TABLE group_enrollments (
     student_id INT,
     group_id INT,
@@ -85,7 +78,6 @@ CREATE TABLE group_enrollments (
     FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
 
--- TABLE grades
 CREATE TABLE grades (
     grade_id INT AUTO_INCREMENT,
     student_id INT NOT NULL,
@@ -98,7 +90,6 @@ CREATE TABLE grades (
     FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
 
--- TABLE subject_enrollments
 CREATE TABLE subject_enrollments (
     student_id INT,
     subject_id INT,
@@ -107,7 +98,6 @@ CREATE TABLE subject_enrollments (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
--- TABLE teaching_loads
 CREATE TABLE teaching_loads (
     professor_id INT,
     group_id INT,
