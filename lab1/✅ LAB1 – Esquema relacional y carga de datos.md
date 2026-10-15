@@ -44,12 +44,10 @@ Este documento resume los fundamentos, la arquitectura de tablas, las normas de 
 ## 💻 4. Script Completo de Creación de Tablas (`createdb.sql`)
 
 ```sql
--- 1. Creación e inicialización de la base de datos
 DROP DATABASE IF EXISTS GradesDB;
 CREATE DATABASE GradesDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE GradesDB;
 
--- 2. Eliminación previa ordenada (desactivando FK checks temporalmente)
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS teaching_loads;
@@ -65,9 +63,6 @@ DROP TABLE IF EXISTS people;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- 3. Definición de Tablas
-
--- Personas (Superclase)
 CREATE TABLE people (
     person_id INT AUTO_INCREMENT,
     dni CHAR(9) NOT NULL,
@@ -78,7 +73,6 @@ CREATE TABLE people (
     PRIMARY KEY (person_id)
 );
 
--- Profesores (Herencia 1:1)
 CREATE TABLE professors (
     professor_id INT,
     category VARCHAR(30) NOT NULL,
@@ -86,7 +80,6 @@ CREATE TABLE professors (
     FOREIGN KEY (professor_id) REFERENCES people(person_id)
 );
 
--- Alumnos (Herencia 1:1)
 CREATE TABLE students (
     student_id INT,
     access_method VARCHAR(20) NOT NULL,
@@ -94,7 +87,6 @@ CREATE TABLE students (
     FOREIGN KEY (student_id) REFERENCES people(person_id)
 );
 
--- Grados
 CREATE TABLE degrees (
     degree_id INT AUTO_INCREMENT,
     degree_name VARCHAR(80) NOT NULL,
@@ -102,7 +94,6 @@ CREATE TABLE degrees (
     PRIMARY KEY (degree_id)
 );
 
--- Asignaturas (1:N con Grados)
 CREATE TABLE subjects (
     subject_id INT AUTO_INCREMENT,
     degree_id INT NOT NULL,
@@ -115,7 +106,6 @@ CREATE TABLE subjects (
     FOREIGN KEY (degree_id) REFERENCES degrees(degree_id)
 );
 
--- Grupos (1:N con Asignaturas)
 CREATE TABLE groups (
     group_id INT AUTO_INCREMENT,
     subject_id INT NOT NULL,
@@ -126,7 +116,6 @@ CREATE TABLE groups (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
--- Pertenencia a Grupos (N:M entre Alumnos y Grupos)
 CREATE TABLE group_enrollments (
     student_id INT,
     group_id INT,
@@ -135,7 +124,6 @@ CREATE TABLE group_enrollments (
     FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
 
--- Notas (Evaluaciones de Alumnos en Grupos)
 CREATE TABLE grades (
     grade_id INT AUTO_INCREMENT,
     student_id INT NOT NULL,
@@ -148,7 +136,6 @@ CREATE TABLE grades (
     FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
 
--- Matrícula en Asignaturas (N:M entre Alumnos y Asignaturas)
 CREATE TABLE subject_enrollments (
     student_id INT,
     subject_id INT,
@@ -157,7 +144,6 @@ CREATE TABLE subject_enrollments (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
--- Docencia / Carga Docente (Clase Asociación N:M entre Profesores y Grupos con Créditos)
 CREATE TABLE teaching_loads (
     professor_id INT,
     group_id INT,
@@ -188,7 +174,6 @@ DELETE FROM people;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- 1. Personas (profesores 1-5, estudiantes 6-25)
 INSERT INTO people (person_id, dni, first_name, last_name, age, email) VALUES
 (1,'00000001A','David','Ruiz',50,'druiz@us.es'),
 (2,'00000002B','Inma','Hernández',40,'inmahernandez@us.es'),
@@ -216,7 +201,6 @@ INSERT INTO people (person_id, dni, first_name, last_name, age, email) VALUES
 (24,'10000024Z','Álex','Delgado',22,'alex.delgado@alum.us.es'),
 (25,'10000025A','Paula','Bermejo',21,'paula.bermejo@alum.us.es');
 
--- 2. Profesores
 INSERT INTO professors (professor_id, category) VALUES
 (1,'Catedrático'),
 (2,'Titular'),
@@ -224,20 +208,17 @@ INSERT INTO professors (professor_id, category) VALUES
 (4,'Titular'),
 (5,'Ayudante');
 
--- 3. Estudiantes
 INSERT INTO students (student_id, access_method) VALUES
 (6,'Selectividad'),(7,'Selectividad'),(8,'Selectividad'),(9,'Selectividad'),(10,'Selectividad'),
 (11,'Selectividad'),(12,'Selectividad'),(13,'Selectividad'),(14,'Selectividad'),(15,'Selectividad'),
 (16,'Selectividad'),(17,'Selectividad'),(18,'Selectividad'),(19,'Selectividad'),(20,'Selectividad'),
 (21,'Selectividad'),(22,'Selectividad'),(23,'Selectividad'),(24,'Selectividad'),(25,'Selectividad');
 
--- 4. Grados
 INSERT INTO degrees (degree_id, degree_name, duration_years) VALUES
 (1,'Ingeniería del Software',4),
 (2,'Ingeniería de Computadores',4),
 (3,'Tecnologías Informáticas',4);
 
--- 5. Asignaturas de Tecnologías Informáticas
 INSERT INTO subjects (subject_id, degree_id, subject_name, acronym, credits, course, subject_type) VALUES
 (1,3,'Fundamentos de Programación','FP',12,1,'Formación Básica'),
 (2,3,'Cálculo Infinitesimal y Numérico','CIN',6,1,'Formación Básica'),
@@ -257,20 +238,17 @@ INSERT INTO subjects (subject_id, degree_id, subject_name, acronym, credits, cou
 (16,3,'Sistemas Operativos','SO',6,2,'Obligatoria'),
 (17,3,'Inteligencia Artificial','IA',6,2,'Obligatoria');
 
--- 6. Grupos de IISSI-1 (1 de Teoría y 2 de Laboratorio)
 INSERT INTO groups (group_id, subject_id, group_name, activity, academic_year) VALUES
 (1,11,'T1','Teoría',2024),
 (2,11,'L1','Laboratorio',2024),
 (3,11,'L2','Laboratorio',2024);
 
--- 7. Pertenencia a Grupos
 INSERT INTO group_enrollments (student_id, group_id) VALUES
 (6,1),(7,1),(8,1),(9,1),(10,1),(11,1),(12,1),(13,1),(14,1),(15,1),
 (16,1),(17,1),(18,1),(19,1),(20,1),(21,1),(22,1),(23,1),(24,1),(25,1),
 (6,2),(7,2),(8,2),(9,2),(10,2),(11,2),(12,2),(13,2),(14,2),(15,2),
 (16,3),(17,3),(18,3),(19,3),(20,3),(21,3),(22,3),(23,3),(24,3),(25,3);
 
--- 8. Calificaciones (Notas)
 INSERT INTO grades (grade_id, student_id, group_id, grade_value, exam_call, with_honors) VALUES
 (1,6,1,9.8,'Primera',1),
 (2,7,1,9.2,'Primera',1),
@@ -308,12 +286,10 @@ INSERT INTO grades (grade_id, student_id, group_id, grade_value, exam_call, with
 (34,24,1,6.0,'Tercera',0),
 (35,25,1,5.7,'Tercera',0);
 
--- 9. Matrícula en Asignaturas
 INSERT INTO subject_enrollments (student_id, subject_id) VALUES
 (6,11),(7,11),(8,11),(9,11),(10,11),(11,11),(12,11),(13,11),(14,11),(15,11),
 (16,11),(17,11),(18,11),(19,11),(20,11),(21,11),(22,11),(23,11),(24,11),(25,11);
 
--- 10. Docencia / Asignación Docente
 INSERT INTO teaching_loads (professor_id, group_id, credits) VALUES
 (1,1,3.0),
 (2,1,3.0),

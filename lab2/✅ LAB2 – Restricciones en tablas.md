@@ -31,31 +31,26 @@ Para identificar con claridad qué regla se viola cuando MariaDB lanza un error,
 Todas estas restricciones se añadieron a la base de datos `GradesDB` mediante instrucciones `ALTER TABLE`:
 
 ```sql
--- 1. Tabla: people (RN12: Edad entre 16 y 70; RN14: Formato DNI con 8 dígitos y 1 letra)
 ALTER TABLE people
     ADD CONSTRAINT rn12_people_age CHECK (age BETWEEN 16 AND 70),
     ADD CONSTRAINT rn14_people_dni CHECK (dni REGEXP '^[0-9]{8}[A-Za-z]$'),
     ADD CONSTRAINT rn_uq_people_dni UNIQUE (dni),
     ADD CONSTRAINT rn_uq_people_email UNIQUE (email);
 
--- 2. Tabla: professors (Categorías académicas permitidas)
 ALTER TABLE professors
     ADD CONSTRAINT ck_professors_category CHECK (
         category IN ('Ayudante','AyudanteDoctor','Titular','Catedrático')
     );
 
--- 3. Tabla: students (Métodos de acceso válidos)
 ALTER TABLE students
     ADD CONSTRAINT ck_students_access_method CHECK (
         access_method IN ('Selectividad','Ciclo','Mayor','Titulado','Extranjero')
     );
 
--- 4. Tabla: degrees (RN13: Duración entre 3 y 6 años; Nombre único)
 ALTER TABLE degrees
     ADD CONSTRAINT rn13_degree_duration CHECK (duration_years BETWEEN 3 AND 6),
     ADD CONSTRAINT rn_uq_degrees_name UNIQUE (degree_name);
 
--- 5. Tabla: subjects (RN10: Créditos 6 o 12; RN16: Cursos 1 a 6; Tipo válido; Nombres únicos)
 ALTER TABLE subjects
     ADD CONSTRAINT rn10_subjects_credits CHECK (credits IN (6, 12)),
     ADD CONSTRAINT rn16_subjects_course CHECK (course BETWEEN 1 AND 6),
@@ -65,7 +60,6 @@ ALTER TABLE subjects
     ADD CONSTRAINT rn_uq_subjects_name UNIQUE (subject_name),
     ADD CONSTRAINT rn_uq_subjects_acronym UNIQUE (acronym);
 
--- 6. Tabla: groups (RN15: Años 2000 a 2100; Actividad Teoría o Lab; Grupo único por año)
 ALTER TABLE groups
     ADD CONSTRAINT rn15_groups_year CHECK (academic_year BETWEEN 2000 AND 2100),
     ADD CONSTRAINT ck_groups_activity CHECK (
@@ -73,11 +67,9 @@ ALTER TABLE groups
     ),
     ADD CONSTRAINT rn_uq_groups_name UNIQUE (subject_id, group_name, academic_year);
 
--- 7. Tabla: teaching_loads (Créditos docentes mayores a 0)
 ALTER TABLE teaching_loads
     ADD CONSTRAINT ck_teaching_loads_credits CHECK (credits > 0);
 
--- 8. Tabla: grades (RN11: Valor 0 a 10; RN01: MH exige nota >= 9; Convocatorias válidas)
 ALTER TABLE grades
     ADD CONSTRAINT rn11_grades_value CHECK (grade_value BETWEEN 0 AND 10),
     ADD CONSTRAINT rn01_grades_with_honors CHECK (
@@ -122,17 +114,14 @@ CREATE TABLE groups (
 > En entornos de producción y en MariaDB, **nunca ejecutes un `UPDATE` o `DELETE` sin la cláusula `WHERE`**, a menos que realmente desees alterar o vaciar toda la tabla.
 
 ```sql
--- Actualizar un dato específico (WHERE con clave primaria):
 UPDATE people 
 SET email = 'nuevo.email@us.es' 
 WHERE person_id = 1;
 
--- Actualizar condicionalmente múltiples filas:
 UPDATE professors 
 SET category = 'Titular' 
 WHERE category = 'AyudanteDoctor';
 
--- Borrar registros que cumplan una condición:
 DELETE FROM grades 
 WHERE grade_value < 5.0;
 ```
@@ -144,19 +133,15 @@ WHERE grade_value < 5.0;
 Las siguientes operaciones fueron probadas para verificar que MariaDB rechaza los datos erróneos:
 
 ```sql
--- 1. Prueba RN12 (Edad < 16) ➔ Rechazado por rn12_people_age
 INSERT INTO people (dni, first_name, last_name, age, email)
 VALUES ('99999999Z', 'Juan', 'Test', 15, 'juan@test.es');
 
--- 2. Prueba RN01 (MH con nota 8.5 < 9) ➔ Rechazado por rn01_grades_with_honors
 INSERT INTO grades (student_id, group_id, grade_value, exam_call, with_honors)
 VALUES (6, 1, 8.5, 'Primera', 1);
 
--- 3. Prueba RN10 (Créditos = 8) ➔ Rechazado por rn10_subjects_credits
 INSERT INTO subjects (degree_id, subject_name, acronym, credits, course, subject_type)
 VALUES (1, 'Asignatura Rara', 'RAR', 8, 1, 'Obligatoria');
 
--- 4. Prueba RN14 (DNI sin letra) ➔ Rechazado por rn14_people_dni
 INSERT INTO people (dni, first_name, last_name, age, email)
 VALUES ('12345678', 'Pedro', 'SinLetra', 25, 'pedro@us.es');
 ```
