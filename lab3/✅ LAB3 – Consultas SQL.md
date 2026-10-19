@@ -187,3 +187,92 @@ WHERE g.grade_value > (SELECT AVG(grade_value) FROM grades);
 ## 📌 5. Conclusión del Lab 3
 
 Con el dominio de **`SELECT`**, combinaciones **`JOIN`**, funciones de resumen y filtros agrupados **`HAVING`**, la base de datos `GradesDB` ya es capaz de resolver todos los requisitos funcionales de consulta del sistema universitario (**RF003 a RF008**).
+
+
+1. Estudiantes que nunca han suspendido (todas sus notas ≥ 5)
+SELECT st.student_id, st.first_name, st.last_name
+FROM v_students st
+JOIN grades g ON st.student_id = g.student_id
+GROUP BY st.student_id, st.first_name, st.last_name
+HAVING MIN(g.grade_value) >= 5;
+
+-- 2. Profesores que solo imparten teoría (no laboratorios)
+SELECT pr.professor_id, pr.first_name, pr.last_name
+FROM v_professors pr
+JOIN teaching_loads tl ON pr.professor_id = tl.professor_id
+JOIN groups gr ON tl.group_id = gr.group_id
+GROUP BY pr.professor_id, pr.first_name, pr.last_name
+HAVING SUM(gr.activity = 'L') = 0;
+
+-- 3. Asignaturas sin grupos creados (usar LEFT JOIN)
+SELECT s.subject_id, s.subject_name
+FROM subjects s
+LEFT JOIN groups gr ON s.subject_id = gr.subject_id
+WHERE gr.group_id IS NULL;
+
+-- 4. Nota media de cada grado en el año 2024
+SELECT d.degree_name, AVG(g.grade_value) AS average_grade
+FROM degrees d
+JOIN subjects s ON d.degree_id = s.degree_id
+JOIN groups gr ON s.subject_id = gr.subject_id
+JOIN grades g ON gr.group_id = g.group_id
+WHERE gr.academic_year = 2024
+GROUP BY d.degree_id, d.degree_name;
+
+-- 5. Estudiantes con la mejor nota de cada asignatura
+SELECT s.subject_name, st.first_name, st.last_name, g.grade_value
+FROM subjects s
+JOIN groups gr ON s.subject_id = gr.subject_id
+JOIN grades g ON gr.group_id = g.group_id
+JOIN v_students st ON g.student_id = st.student_id
+WHERE g.grade_value = (
+    SELECT MAX(g2.grade_value)
+    FROM groups gr2
+    JOIN grades g2 ON gr2.group_id = g2.group_id
+    WHERE gr2.subject_id = s.subject_id
+);
+
+-- 6. Grupos ordenados por número de estudiantes matriculados
+SELECT gr.group_id, gr.group_name, COUNT(ge.student_id) AS total_students
+FROM groups gr
+LEFT JOIN group_enrollments ge ON gr.group_id = ge.group_id
+GROUP BY gr.group_id, gr.group_name
+ORDER BY total_students DESC;
+
+-- 7. Profesores con carga docente superior a 15 créditos
+SELECT pr.professor_id, pr.first_name, pr.last_name, SUM(tl.credits) AS total_credits
+FROM v_professors pr
+JOIN teaching_loads tl ON pr.professor_id = tl.professor_id
+GROUP BY pr.professor_id, pr.first_name, pr.last_name
+HAVING SUM(tl.credits) > 15;
+
+-- 8. Año académico con más matrículas de honor
+SELECT gr.academic_year, COUNT(*) AS total_honors
+FROM grades g
+JOIN groups gr ON g.group_id = gr.group_id
+WHERE g.with_honors = 1
+GROUP BY gr.academic_year
+ORDER BY total_honors DESC
+LIMIT 1;
+
+-- 9. Asignaturas con mayor dispersión de notas (STD o VARIANCE)
+SELECT s.subject_name, STDDEV(g.grade_value) AS dispersion
+FROM subjects s
+JOIN groups gr ON s.subject_id = gr.subject_id
+JOIN grades g ON gr.group_id = g.group_id
+GROUP BY s.subject_id, s.subject_name
+ORDER BY dispersion DESC;
+
+ 10. Estudiantes matriculados en todas las asignaturas de primer curso
+SELECT st.student_id, st.first_name, st.last_name
+FROM v_students st
+JOIN group_enrollments ge ON st.student_id = ge.student_id
+JOIN groups gr ON ge.group_id = gr.group_id
+JOIN subjects s ON gr.subject_id = s.subject_id
+WHERE s.course = 1
+GROUP BY st.student_id, st.first_name, st.last_name
+HAVING COUNT(DISTINCT s.subject_id) = (
+    SELECT COUNT(*)
+    FROM subjects
+    WHERE course = 1
+);
