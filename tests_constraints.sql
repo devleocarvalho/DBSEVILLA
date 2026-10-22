@@ -180,153 +180,153 @@ END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn001_mh_requirement()
+CREATE OR REPLACE PROCEDURE p_test_rn01_mh_requirement()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN001', 'RN001: La MH requiere nota >= 9', 'PASS');
+        CALL p_log_test('RN01', 'RN001: La MH requiere nota >= 9', 'PASS');
 
     CALL p_populate();
 
     UPDATE grades SET with_honors = 1 WHERE grade_id = 21;
 
-    CALL p_log_test('RN001', 'ERROR: Se permitió MH con nota inferior a 9', 'FAIL');
+    CALL p_log_test('RN01', 'ERROR: Se permitió MH con nota inferior a 9', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn009_not_null_attributes()
+CREATE OR REPLACE PROCEDURE p_test_rn09_not_null_attributes()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN009', 'RN009: Los atributos obligatorios no pueden quedar a NULL', 'PASS');
+        CALL p_log_test('RN09', 'RN009: Los atributos obligatorios no pueden quedar a NULL', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO people (person_id, dni, first_name, last_name, age, email)
         VALUES (103, '20000003C', NULL, 'Campos', 22, 'null@alum.us.es');
 
-    CALL p_log_test('RN009', 'ERROR: Se permitió dejar atributos obligatorios a NULL', 'FAIL');
+    CALL p_log_test('RN09', 'ERROR: Se permitió dejar atributos obligatorios a NULL', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn010_subject_credits()
+CREATE OR REPLACE PROCEDURE p_test_rn10_subject_credits()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN010', 'RN010: Los créditos de una asignatura pueden ser 6 o 12', 'PASS');
+        CALL p_log_test('RN10', 'RN010: Los créditos de una asignatura pueden ser 6 o 12', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO subjects (subject_id, degree_id, subject_name, acronym, credits, course, subject_type)
         VALUES (31, 3, 'Asignatura Créditos Inválidos', 'ACI', 8, 2, 'Obligatoria');
 
-    CALL p_log_test('RN010', 'ERROR: Se permitió una asignatura con créditos inválidos', 'FAIL');
+    CALL p_log_test('RN10', 'ERROR: Se permitió una asignatura con créditos inválidos', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn011_grade_range()
+CREATE OR REPLACE PROCEDURE p_test_rn11_grade_range()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN011', 'RN011: La nota debe estar entre 0 y 10', 'PASS');
+        CALL p_log_test('RN11', 'RN011: La nota debe estar entre 0 y 10', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO grades (grade_id, student_id, group_id, grade_value, exam_call, with_honors)
         VALUES (201, 6, 1, 11.0, 'Primera', 0);
 
-    CALL p_log_test('RN011', 'ERROR: Se permitió una nota fuera de rango', 'FAIL');
+    CALL p_log_test('RN11', 'ERROR: Se permitió una nota fuera de rango', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn012_people_age()
+CREATE OR REPLACE PROCEDURE p_test_rn12_people_age()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN012', 'RN012: La edad de las personas debe estar entre 16 y 70', 'PASS');
+        CALL p_log_test('RN12', 'RN012: La edad de las personas debe estar entre 16 y 70', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO people (person_id, dni, first_name, last_name, age, email)
         VALUES (105, '20000005E', 'Edad', 'Fuera', 80, 'edad@us.es');
 
-    CALL p_log_test('RN012', 'ERROR: Se permitió una edad fuera de rango', 'FAIL');
+    CALL p_log_test('RN12', 'ERROR: Se permitió una edad fuera de rango', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn013_degree_years()
+CREATE OR REPLACE PROCEDURE p_test_rn13_degree_years()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN013', 'RN013: Los grados deben tener entre 3 y 6 años', 'PASS');
+        CALL p_log_test('RN13', 'RN013: Los grados deben tener entre 3 y 6 años', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO degrees (degree_id, degree_name, duration_years)
         VALUES (10, 'Grado Experimental', 2);
 
-    CALL p_log_test('RN013', 'ERROR: Se permitió un grado con años fuera de rango', 'FAIL');
+    CALL p_log_test('RN13', 'ERROR: Se permitió un grado con años fuera de rango', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn014_dni_format()
+CREATE OR REPLACE PROCEDURE p_test_rn14_dni_format()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN014', 'RN014: El DNI debe tener 8 dígitos y una letra', 'PASS');
+        CALL p_log_test('RN14', 'RN014: El DNI debe tener 8 dígitos y una letra', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO people (person_id, dni, first_name, last_name, age, email)
         VALUES (106, 'INVALIDO', 'DNI', 'Incorrecto', 30, 'dni@us.es');
 
-    CALL p_log_test('RN014', 'ERROR: Se permitió un DNI con formato inválido', 'FAIL');
+    CALL p_log_test('RN14', 'ERROR: Se permitió un DNI con formato inválido', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn015_academic_year()
+CREATE OR REPLACE PROCEDURE p_test_rn15_academic_year()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN015', 'RN015: El año académico debe estar entre 2000 y 2100', 'PASS');
+        CALL p_log_test('RN15', 'RN015: El año académico debe estar entre 2000 y 2100', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO groups (group_id, subject_id, group_name, activity, academic_year)
         VALUES (20, 12, 'MD-T2025', 'Teoría', 1999);
 
-    CALL p_log_test('RN015', 'ERROR: Se permitió un año académico fuera de rango', 'FAIL');
+    CALL p_log_test('RN15', 'ERROR: Se permitió un año académico fuera de rango', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_test_rn016_course_range()
+CREATE OR REPLACE PROCEDURE p_test_rn16_course_range()
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
-        CALL p_log_test('RN016', 'RN016: El curso de una asignatura debe estar entre 1 y 6', 'PASS');
+        CALL p_log_test('RN16', 'RN016: El curso de una asignatura debe estar entre 1 y 6', 'PASS');
 
     CALL p_populate();
 
     INSERT INTO subjects (subject_id, degree_id, subject_name, acronym, credits, course, subject_type)
         VALUES (30, 3, 'Asignatura Fuera de Curso', 'AFC', 6, 0, 'Obligatoria');
 
-    CALL p_log_test('RN016', 'ERROR: Se permitió un curso fuera de rango', 'FAIL');
+    CALL p_log_test('RN16', 'ERROR: Se permitió un curso fuera de rango', 'FAIL');
 END //
 DELIMITER ;
 
 DELIMITER //
-CREATE OR REPLACE PROCEDURE p_run_constraint_tests()
+CREATE OR REPLACE PROCEDURE p_run_tests()
 BEGIN
     DELETE FROM test_results;
 
-    CALL p_test_rn001_mh_requirement();
-    CALL p_test_rn009_not_null_attributes();
-    CALL p_test_rn010_subject_credits();
-    CALL p_test_rn011_grade_range();
-    CALL p_test_rn012_people_age();
-    CALL p_test_rn013_degree_years();
-    CALL p_test_rn014_dni_format();
-    CALL p_test_rn015_academic_year();
-    CALL p_test_rn016_course_range();
+    CALL p_test_rn01_mh_requirement();
+    CALL p_test_rn09_not_null_attributes();
+    CALL p_test_rn10_subject_credits();
+    CALL p_test_rn11_grade_range();
+    CALL p_test_rn12_people_age();
+    CALL p_test_rn13_degree_years();
+    CALL p_test_rn14_dni_format();
+    CALL p_test_rn15_academic_year();
+    CALL p_test_rn16_course_range();
 
     SELECT test_id, test_name, test_status, execution_time 
     FROM test_results 
@@ -338,4 +338,4 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL p_run_constraint_tests();
+CALL p_run_tests();
