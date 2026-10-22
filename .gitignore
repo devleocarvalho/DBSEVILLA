@@ -1,0 +1,5 @@
+# Ignorar arquivos Markdown (.md) em subpastas
+*/**/*.md
+
+# Garante que o README.md da raiz continue versionado
+!/README.md
