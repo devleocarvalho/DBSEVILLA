@@ -1,9 +1,8 @@
-USE grades_db;
+USE gradesdb;
 
 DELIMITER //
 
--- RN04: indica si el alumno ya está en un grupo de la actividad (teoría o
--- laboratorio) en la asignatura. La usa el trigger t_biu_students_groups_rn04_rn07
+
 CREATE OR REPLACE FUNCTION f_student_group_limit(
     p_student_id INT,
     p_subject_id INT,
@@ -14,20 +13,19 @@ DETERMINISTIC
 READS SQL DATA
 BEGIN
     DECLARE v_count INT;
-    -- Grupos de esa asignatura y actividad en los que ya está el alumno
+
     SELECT COUNT(*) INTO v_count
-    FROM students_groups ge
+    FROM group_enrollments ge
     JOIN groups g ON g.group_id = ge.group_id
     WHERE ge.student_id = p_student_id
       AND g.subject_id = p_subject_id
       AND g.activity = p_activity;
 
-    -- RN04: como máximo un grupo de cada actividad (teoría o laboratorio)
+
     RETURN v_count >= 1;
 END//
 
--- RN07: indica si el alumno está matriculado en la asignatura.
--- La usa el trigger t_biu_students_groups_rn04_rn07
+
 CREATE OR REPLACE FUNCTION f_is_student_enrolled(
     p_student_id INT,
     p_subject_id INT
@@ -38,15 +36,13 @@ READS SQL DATA
 BEGIN
     DECLARE v_exists INT;
     SELECT COUNT(*) INTO v_exists
-    FROM students_subjects
+    FROM subject_enrollments
     WHERE student_id = p_student_id
-      AND subject_id = p_subject_id;
+    AND subject_id = p_subject_id;
     RETURN v_exists > 0;
 END//
 
--- RN06: indica si la asignatura ya tiene en ese año académico el máximo de
--- grupos de la actividad (uno de teoría o dos de laboratorio).
--- La usa el trigger t_biu_groups_rn06
+
 CREATE OR REPLACE FUNCTION f_subject_group_limit_reached(
     p_subject_id INT,
     p_activity VARCHAR(15),
@@ -59,14 +55,14 @@ BEGIN
     DECLARE v_count INT;
     DECLARE v_result BOOLEAN DEFAULT FALSE;
 
-    -- Grupos que ya tiene la asignatura de esa actividad en ese año
+
     SELECT COUNT(*) INTO v_count
     FROM groups
     WHERE subject_id = p_subject_id
       AND activity = p_activity
       AND academic_year = p_academic_year;
 
-    -- El máximo depende de la actividad
+
     IF p_activity = 'Teoría' THEN
         SET v_result = (v_count >= 1);
     ELSEIF p_activity = 'Laboratorio' THEN
