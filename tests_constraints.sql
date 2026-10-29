@@ -1,4 +1,4 @@
-USE GradesDB;
+﻿USE GradesDB;
 
 DELIMITER //
 CREATE OR REPLACE PROCEDURE p_populate()
@@ -103,6 +103,11 @@ BEGIN
     (2,1,'IISSI1-L1','Laboratorio',2024),
     (3,1,'IISSI1-L2','Laboratorio',2024);
 
+    INSERT INTO subject_enrollments (student_id, subject_id) VALUES
+    (6,1),(7,1),(8,1),(9,1),(10,1),
+    (11,1),(12,1),(13,1),(14,1),(15,1),
+    (16,1),(17,1),(18,1),(19,1),(20,1);
+
     INSERT INTO group_enrollments (student_id, group_id) VALUES
     (6,1),(7,1),(8,1),(9,1),(10,1),
     (11,1),(12,1),(13,1),(14,1),(15,1),
@@ -146,11 +151,6 @@ BEGIN
     (33,13,3,7.30,'Primera',0),
     (34,14,3,8.10,'Primera',0),
     (35,15,3,6.90,'Primera',0);
-
-    INSERT INTO subject_enrollments (student_id, subject_id) VALUES
-    (6,1),(7,1),(8,1),(9,1),(10,1),
-    (11,1),(12,1),(13,1),(14,1),(15,1),
-    (16,1),(17,1),(18,1),(19,1),(20,1);
 
     INSERT INTO teaching_loads (professor_id, group_id, credits) VALUES
     (1,1,3.0),

@@ -1,4 +1,4 @@
-USE gradesdb;
+USE GradesDB;
 
 CREATE OR REPLACE TABLE test_results (
     test_id VARCHAR(20) PRIMARY KEY,

@@ -1,9 +1,4 @@
-
-
-USE grades_db;
-
-
-
+USE GradesDB;
 
 DELIMITER //
 CREATE OR REPLACE FUNCTION f_student_average(
@@ -11,7 +6,8 @@ CREATE OR REPLACE FUNCTION f_student_average(
 ) RETURNS DECIMAL(4,2)
 BEGIN
     DECLARE v_average DECIMAL(4,2) DEFAULT 0;
-  SELECT COALESCE(AVG(grade_value), 0) INTO v_average
+
+    SELECT COALESCE(AVG(grade_value), 0) INTO v_average
     FROM grades
     WHERE student_id = p_student_id;
 

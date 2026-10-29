@@ -1,4 +1,4 @@
-USE GradesDB;
+﻿USE GradesDB;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -100,6 +100,10 @@ INSERT INTO groups (group_id, subject_id, group_name, activity, academic_year) V
 (2,11,'L1','Laboratorio',2024),
 (3,11,'L2','Laboratorio',2024);
 
+INSERT INTO subject_enrollments (student_id, subject_id) VALUES
+(6,11),(7,11),(8,11),(9,11),(10,11),(11,11),(12,11),(13,11),(14,11),(15,11),
+(16,11),(17,11),(18,11),(19,11),(20,11),(21,11),(22,11),(23,11),(24,11),(25,11);
+
 INSERT INTO group_enrollments (student_id, group_id) VALUES
 (6,1),(7,1),(8,1),(9,1),(10,1),(11,1),(12,1),(13,1),(14,1),(15,1),
 (16,1),(17,1),(18,1),(19,1),(20,1),(21,1),(22,1),(23,1),(24,1),(25,1),
@@ -142,10 +146,6 @@ INSERT INTO grades (grade_id, student_id, group_id, grade_value, exam_call, with
 (33,23,1,5.5,'Tercera',0),
 (34,24,1,6.0,'Tercera',0),
 (35,25,1,5.7,'Tercera',0);
-
-INSERT INTO subject_enrollments (student_id, subject_id) VALUES
-(6,11),(7,11),(8,11),(9,11),(10,11),(11,11),(12,11),(13,11),(14,11),(15,11),
-(16,11),(17,11),(18,11),(19,11),(20,11),(21,11),(22,11),(23,11),(24,11),(25,11);
 
 INSERT INTO teaching_loads (professor_id, group_id, credits) VALUES
 (1,1,3.0),
