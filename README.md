@@ -22,3 +22,10 @@ Repositorio de laboratorios y proyectos de la asignatura **Introducción a la In
   * Datos adicionales en `populatedb2.sql`.
 * **`lab4/`**: Procedimientos almacenados y tests automatizados:
   * Procedimientos `PROCEDURE` y batería de pruebas `tests_constraints.sql`.
+  * Documento: [Lab 4 - Procedimientos y tests](lab4/✅%20LAB4%20–%20Procedimientos%20almacenados%20y%20Tests%20SQL.md).
+* **`lab5/`**: Funciones y triggers SQL (Reglas de negocio procedurales):
+  * Funciones `FUNCTION`, triggers con pseudo-filas `NEW`/`OLD`, `SIGNAL SQLSTATE '45000'`.
+  * Documento: [Lab 5 - Funciones y triggers](lab5/✅%20LAB5%20–%20Funciones%20y%20triggers.md).
+* **`lab6/`**: Framework Silence y APIs RESTful:
+  * Instalación y configuración de Silence, seguridad RNF01 (`grants.sql`), usuarios/roles y endpoints personalizados.
+  * Documento: [Lab 6 - Framework Silence](lab6/✅%20LAB6%20–%20Framework%20Silence.md).
