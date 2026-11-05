@@ -1,0 +1,9 @@
+SOURCE create_db.sql;
+SOURCE populate_db.sql;
+SOURCE populate_db2.sql;
+SOURCE functions.sql;
+SOURCE triggers.sql;
+SOURCE procedures.sql;
+SOURCE auth.sql;
+SOURCE tests_constraints.sql;
+SOURCE tests.sql;

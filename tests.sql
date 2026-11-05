@@ -1,4 +1,4 @@
-USE GradesDB;
+USE grades_db;
 
 CREATE OR REPLACE TABLE test_results (
     test_id VARCHAR(20) PRIMARY KEY,
@@ -72,7 +72,7 @@ BEGIN
 
     CALL p_populate();
 
-    INSERT INTO group_enrollments (student_id, group_id) VALUES (6, 3);
+    INSERT INTO students_groups (student_id, group_id) VALUES (6, 3);
 
     CALL p_log_test('RN04', 'ERROR: Se permitió un alumno en más grupos de los permitidos', 'FAIL');
 END //
@@ -118,7 +118,7 @@ BEGIN
     INSERT INTO people (person_id, dni, first_name, last_name, age, email)
         VALUES (102, '20000002B', 'Test', 'Alumno', 20, 'nuevo@alum.us.es');
     INSERT INTO students (student_id, access_method) VALUES (102, 'Selectividad');
-    INSERT INTO group_enrollments (student_id, group_id) VALUES (102, 1);
+    INSERT INTO students_groups (student_id, group_id) VALUES (102, 1);
 
     CALL p_log_test('RN07', 'ERROR: Se permitió unir a un grupo sin matrícula en la asignatura', 'FAIL');
 END //

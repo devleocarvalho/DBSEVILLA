@@ -1,7 +1,6 @@
-USE GradesDB;
+USE grades_db;
 
 DELIMITER //
-
 
 CREATE OR REPLACE TRIGGER t_biu_students_rn08
 BEFORE INSERT OR UPDATE ON students
@@ -9,7 +8,7 @@ FOR EACH ROW
 BEGIN
     DECLARE v_age TINYINT;
     IF NEW.access_method = 'Selectividad' THEN
-        
+
         SELECT age INTO v_age FROM people WHERE person_id = NEW.student_id;
         IF v_age < 16 THEN
             SIGNAL SQLSTATE '45000'
@@ -18,7 +17,6 @@ BEGIN
     END IF;
 END//
 
-
 CREATE OR REPLACE TRIGGER t_biu_grades_rn02
 BEFORE INSERT OR UPDATE ON grades
 FOR EACH ROW
@@ -26,7 +24,7 @@ BEGIN
     DECLARE v_count INT;
 
     SELECT COUNT(*) INTO v_count
-    FROM group_enrollments
+    FROM students_groups
     WHERE student_id = NEW.student_id
       AND group_id = NEW.group_id;
 
@@ -35,7 +33,6 @@ BEGIN
             SET MESSAGE_TEXT = 'RN02: El alumno no pertenece al grupo indicado';
     END IF;
 END//
-
 
 CREATE OR REPLACE TRIGGER t_biu_grades_rn17
 BEFORE INSERT OR UPDATE ON grades
@@ -48,7 +45,6 @@ BEGIN
     SELECT subject_id, academic_year INTO v_subject_id, v_academic_year
     FROM groups
     WHERE group_id = NEW.group_id;
-
 
     SELECT COUNT(*) INTO v_exists
     FROM grades g
@@ -66,7 +62,6 @@ BEGIN
     END IF;
 END//
 
-
 CREATE OR REPLACE TRIGGER t_bu_grades_rn05
 BEFORE UPDATE ON grades
 FOR EACH ROW
@@ -78,13 +73,11 @@ BEGIN
     END IF;
 END//
 
-
 CREATE OR REPLACE TRIGGER t_biu_teaching_loads_rn03
 BEFORE INSERT OR UPDATE ON teaching_loads
 FOR EACH ROW
 BEGIN
     DECLARE v_count INT;
-
 
     IF NOT (NEW.group_id <=> OLD.group_id) THEN
         SELECT COUNT(*) INTO v_count
@@ -98,9 +91,8 @@ BEGIN
     END IF;
 END//
 
-
-CREATE OR REPLACE TRIGGER t_biu_group_enrollments_rn04_rn07
-BEFORE INSERT OR UPDATE ON group_enrollments
+CREATE OR REPLACE TRIGGER t_biu_students_groups_rn04_rn07
+BEFORE INSERT OR UPDATE ON students_groups
 FOR EACH ROW
 BEGIN
     DECLARE v_subject_id INT;
@@ -108,11 +100,9 @@ BEGIN
     DECLARE v_old_subject_id INT;
     DECLARE v_old_activity VARCHAR(15);
 
-
     SELECT subject_id, activity INTO v_subject_id, v_activity
     FROM groups
     WHERE group_id = NEW.group_id;
-
 
     SET v_old_subject_id = (SELECT subject_id FROM groups WHERE group_id = OLD.group_id);
     SET v_old_activity = (SELECT activity FROM groups WHERE group_id = OLD.group_id);
@@ -121,8 +111,6 @@ BEGIN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'RN07: El alumno debe estar matriculado en la asignatura';
     END IF;
-
-
 
     IF NOT (NEW.student_id <=> OLD.student_id
             AND v_subject_id <=> v_old_subject_id
@@ -138,13 +126,10 @@ BEGIN
     END IF;
 END//
 
-
-
 CREATE OR REPLACE TRIGGER t_biu_groups_rn06
 BEFORE INSERT OR UPDATE ON groups
 FOR EACH ROW
 BEGIN
-
 
     IF NOT (NEW.subject_id <=> OLD.subject_id
             AND NEW.activity <=> OLD.activity

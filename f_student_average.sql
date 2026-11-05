@@ -1,4 +1,4 @@
-USE GradesDB;
+USE grades_db;
 
 DELIMITER //
 CREATE OR REPLACE FUNCTION f_student_average(
