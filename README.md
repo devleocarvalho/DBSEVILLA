@@ -28,7 +28,3 @@ Repositorio de laboratorios y proyectos de la asignatura **Introducción a la In
 * **`lab5/`**: Funciones y triggers SQL (Reglas de negocio procedurales):
   * Funciones en `functions.sql`, triggers en `triggers.sql` y batería completa de pruebas en `tests.sql`.
   * Documento: [Lab 5 - Funciones y triggers](lab5/✅%20LAB5%20–%20Funciones%20y%20triggers.md).
-* **`lab6/`**: Framework Silence y APIs RESTful:
-  * Instalación y configuración de Silence, seguridad RNF01 (`auth.sql`, `grants.sql`), usuarios/roles y endpoints personalizados.
-  * Documento: [Lab 6 - Framework Silence](lab6/✅%20LAB6%20–%20Framework%20Silence.md).
-* **`load_db.sql`**: Script orquestador maestro para cargar toda la base de datos en orden y ejecutar la suite de tests.
