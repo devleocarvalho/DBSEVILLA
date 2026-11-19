@@ -156,4 +156,66 @@ BEGIN
     COMMIT;
 END //
 
+CREATE OR REPLACE PROCEDURE p_transfer_student(
+    IN p_student_id INT,
+    IN p_old_group_id INT,
+    IN p_new_group_id INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    DELETE FROM students_groups
+    WHERE student_id = p_student_id AND group_id = p_old_group_id;
+
+    INSERT INTO students_groups (student_id, group_id)
+    VALUES (p_student_id, p_new_group_id);
+
+    COMMIT;
+END //
+
+CREATE TABLE IF NOT EXISTS grade_history (
+    history_id INT AUTO_INCREMENT PRIMARY KEY,
+    grade_id INT NOT NULL,
+    old_grade_value DECIMAL(4,2) NOT NULL,
+    new_grade_value DECIMAL(4,2) NOT NULL,
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_history_grade FOREIGN KEY (grade_id)
+        REFERENCES grades (grade_id) ON DELETE CASCADE
+);
+
+CREATE OR REPLACE PROCEDURE p_update_grade_with_history(
+    IN p_grade_id INT,
+    IN p_new_grade_value DECIMAL(4,2)
+)
+BEGIN
+    DECLARE v_old_grade DECIMAL(4,2);
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    SELECT grade_value INTO v_old_grade
+    FROM grades
+    WHERE grade_id = p_grade_id;
+
+    INSERT INTO grade_history (grade_id, old_grade_value, new_grade_value)
+    VALUES (p_grade_id, v_old_grade, p_new_grade_value);
+
+    UPDATE grades
+    SET grade_value = p_new_grade_value
+    WHERE grade_id = p_grade_id;
+
+    COMMIT;
+END //
+
 DELIMITER ;
